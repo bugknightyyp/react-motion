@@ -11,8 +11,8 @@ export type ReactElement = React.Element<*>;
 // === basic reused types ===
 // type of the second parameter of `spring(val, config)` all fields are optional
 export type SpringHelperConfig = {
-  stiffness?: number,
-  damping?: number,
+  stiffness?: number,//刚性 在页面上表现就是，从0变到10 刚性越大，所用时间越少
+  damping?: number,//减震  回弹效果，
   precision?: number,
 };
 // the object returned by `spring(value, yourConfig)`. For internal usage only!
