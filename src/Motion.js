@@ -2,8 +2,8 @@
 import mapToZero from './mapToZero';
 import stripStyle from './stripStyle';
 import stepper from './stepper';
-import defaultNow from 'performance-now';
-import defaultRaf from 'raf';
+import defaultNow from 'performance-now';  //https://github.com/braveg1rl/performance-now
+import defaultRaf from 'raf'; //requestAnimationFrame polyfill library  https://github.com/chrisdickinson/raf
 import shouldStopAnimation from './shouldStopAnimation';
 import React, {PropTypes} from 'react';
 
@@ -32,8 +32,8 @@ const Motion = React.createClass({
 
   getInitialState(): MotionState {
     const {defaultStyle, style} = this.props;
-    const currentStyle = defaultStyle || stripStyle(style);
-    const currentVelocity = mapToZero(currentStyle);
+    const currentStyle = defaultStyle || stripStyle(style);// 抽取要进行动画的字段
+    const currentVelocity = mapToZero(currentStyle);//将所有字段值设为0
     return {
       currentStyle,
       currentVelocity,
@@ -43,7 +43,7 @@ const Motion = React.createClass({
   },
 
   wasAnimating: false,
-  animationID: (null: ?number),
+  animationID: (null: ?number),//window.cancelAnimationFrame(requestID);
   prevTime: 0,
   accumulatedTime: 0,
   // it's possible that currentStyle's value is stale: if props is immediately
@@ -66,7 +66,7 @@ const Motion = React.createClass({
 
       const styleValue = destStyle[key];
       if (typeof styleValue === 'number') {
-        if (!dirty) {
+        if (!dirty) {// 对原来数据的复制，避免对this.state里对应的数据的改变
           dirty = true;
           currentStyle = {...currentStyle};
           currentVelocity = {...currentVelocity};
@@ -89,7 +89,7 @@ const Motion = React.createClass({
   startAnimationIfNecessary(): void {
     // TODO: when config is {a: 10} and dest is {a: 10} do we raf once and
     // call cb? No, otherwise accidental parent rerender causes cb trigger
-    this.animationID = defaultRaf((timestamp) => {
+    this.animationID = defaultRaf((timestamp) => {//其实timestamp没用 因为没法传 所以currentTime每次取的是window.performance.now();
       // check if we need to animate in the first place
       const propsStyle: Style = this.props.style;
       if (shouldStopAnimation(
@@ -110,12 +110,12 @@ const Motion = React.createClass({
 
       this.wasAnimating = true;
 
-      const currentTime = timestamp || defaultNow();
-      const timeDelta = currentTime - this.prevTime;
-      this.prevTime = currentTime;
-      this.accumulatedTime = this.accumulatedTime + timeDelta;
-      // more than 10 frames? prolly switched browser tab. Restart
-      if (this.accumulatedTime > msPerFrame * 10) {
+      const currentTime = timestamp || defaultNow();//当前时间
+      const timeDelta = currentTime - this.prevTime;// 上一次时间到当前时间的偏移量
+      this.prevTime = currentTime;//prevTime保存当前时间
+      this.accumulatedTime = this.accumulatedTime + timeDelta;//累加时间
+      // more than 10 frames? prolly switched browser tab. Restart //切换浏览器选项卡
+      if (this.accumulatedTime > msPerFrame * 10) {// 当accumulatedTime大于10个msPerFrame，归零
         this.accumulatedTime = 0;
       }
 
@@ -126,7 +126,7 @@ const Motion = React.createClass({
         return;
       }
 
-      let currentFrameCompletion =
+      let currentFrameCompletion = //当前完成的总帧数
         (this.accumulatedTime - Math.floor(this.accumulatedTime / msPerFrame) * msPerFrame) / msPerFrame;
       const framesToCatchUp = Math.floor(this.accumulatedTime / msPerFrame);
 
