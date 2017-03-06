@@ -41,8 +41,8 @@ const StaggeredMotion = React.createClass({
 
   getInitialState(): StaggeredMotionState {
     const {defaultStyles, styles} = this.props;
-    const currentStyles: Array<PlainStyle> = defaultStyles || styles().map(stripStyle);
-    const currentVelocities = currentStyles.map(currentStyle => mapToZero(currentStyle));
+    const currentStyles: Array<PlainStyle> = defaultStyles || styles().map(stripStyle);//这里styles 是个方法
+    const currentVelocities = currentStyles.map(currentStyle => mapToZero(currentStyle));/// 初始化 速度为0
     return {
       currentStyles,
       currentVelocities,

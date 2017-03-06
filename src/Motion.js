@@ -65,10 +65,10 @@ const Motion = React.createClass({
       }
 
       const styleValue = destStyle[key];
-      if (typeof styleValue === 'number') {
-        if (!dirty) {// 对原来数据的复制，避免对this.state里对应的数据的改变
+      if (typeof styleValue === 'number') {//只处理不进行动画的 number类型数据, 不处理进行动画的OpaqueConfig类型数据
+        if (!dirty) {
           dirty = true;
-          currentStyle = {...currentStyle};
+          currentStyle = {...currentStyle};// 对原来数据的复制，避免对this.state里对应的数据的改变
           currentVelocity = {...currentVelocity};
           lastIdealStyle = {...lastIdealStyle};
           lastIdealVelocity = {...lastIdealVelocity};
@@ -81,7 +81,7 @@ const Motion = React.createClass({
       }
     }
 
-    if (dirty) {
+    if (dirty) {// 如果可以改变，则设置更新
       this.setState({currentStyle, currentVelocity, lastIdealStyle, lastIdealVelocity});
     }
   },
@@ -114,9 +114,10 @@ const Motion = React.createClass({
       const timeDelta = currentTime - this.prevTime;// 上一次时间到当前时间的偏移量
       this.prevTime = currentTime;//prevTime保存当前时间
       this.accumulatedTime = this.accumulatedTime + timeDelta;//累加时间
-      // more than 10 frames? prolly switched browser tab. Restart //切换浏览器选项卡
-      if (this.accumulatedTime > msPerFrame * 10) {// 当accumulatedTime大于10个msPerFrame，归零
-        this.accumulatedTime = 0;
+      // more than 10 frames? prolly switched browser tab. Restart
+      //什么情况下大于10 frames呢，比如我切换了浏览器tab,动画会停止执行，然后又重新切回来，那么动画重新开始
+      if (this.accumulatedTime > msPerFrame * 10) {
+        this.accumulatedTime = 0;//归零
       }
 
       if (this.accumulatedTime === 0) {
@@ -126,9 +127,9 @@ const Motion = React.createClass({
         return;
       }
 
-      let currentFrameCompletion = //当前完成的总帧数
+      let currentFrameCompletion = //当前帧完成的进度
         (this.accumulatedTime - Math.floor(this.accumulatedTime / msPerFrame) * msPerFrame) / msPerFrame;
-      const framesToCatchUp = Math.floor(this.accumulatedTime / msPerFrame);
+      const framesToCatchUp = Math.floor(this.accumulatedTime / msPerFrame);//this.accumulatedTime 时间里经过了多少帧
 
       let newLastIdealStyle: PlainStyle = {};
       let newLastIdealVelocity: Velocity = {};
@@ -142,16 +143,16 @@ const Motion = React.createClass({
 
         const styleValue = propsStyle[key];
         if (typeof styleValue === 'number') {
-          newCurrentStyle[key] = styleValue;
+          newCurrentStyle[key] = styleValue;//
           newCurrentVelocity[key] = 0;
           newLastIdealStyle[key] = styleValue;
           newLastIdealVelocity[key] = 0;
-        } else {
+        } else {// OpaqueConfig
           let newLastIdealStyleValue = this.state.lastIdealStyle[key];
           let newLastIdealVelocityValue = this.state.lastIdealVelocity[key];
-          for (let i = 0; i < framesToCatchUp; i++) {
+          for (let i = 0; i < framesToCatchUp; i++) {// 多次循环计算，目的是使得的计算出来的结果更精准
             [newLastIdealStyleValue, newLastIdealVelocityValue] = stepper(
-              msPerFrame / 1000,
+              msPerFrame / 1000, //毫秒转成秒
               newLastIdealStyleValue,
               newLastIdealVelocityValue,
               styleValue.val,
@@ -225,7 +226,7 @@ const Motion = React.createClass({
 
   render(): ReactElement {
     const renderedChildren = this.props.children(this.state.currentStyle);
-    return renderedChildren && React.Children.only(renderedChildren);
+    return renderedChildren && React.Children.only(renderedChildren);//返回唯一的子元素否则报错
   },
 });
 

@@ -11,9 +11,9 @@ export type ReactElement = React.Element<*>;
 // === basic reused types ===
 // type of the second parameter of `spring(val, config)` all fields are optional
 export type SpringHelperConfig = {
-  stiffness?: number,//刚性 在页面上表现就是，从0变到10 刚性越大，所用时间越少
-  damping?: number,//减震  回弹效果，
-  precision?: number,
+  stiffness?: number,// 弹簧劲度系数
+  damping?: number, // 空气阻力系数
+  precision?: number,//精度
 };
 // the object returned by `spring(value, yourConfig)`. For internal usage only!
 export type OpaqueConfig = {
@@ -23,13 +23,13 @@ export type OpaqueConfig = {
   precision: number,
 };
 // your typical style object given in props. Maps to a number or a spring config
-export type Style = {[key: string]: number | OpaqueConfig};
+export type Style = {[key: string]: number | OpaqueConfig};//number: 不会执行动画; OpaqueConfig: 执行动画
 // the interpolating style object, with the same keys as the above Style object,
 // with the values mapped to numbers, naturally
-export type PlainStyle = {[key: string]: number};
+export type PlainStyle = {[key: string]: number};// 纯style(类似纯文本plain text) 数字代表style属性值
 // internal velocity object. Similar to PlainStyle, but whose numbers represent
 // speed. Might be exposed one day.
-export type Velocity = {[key: string]: number};
+export type Velocity = {[key: string]: number};//数字代表速度
 
 // === Motion ===
 export type MotionProps = {

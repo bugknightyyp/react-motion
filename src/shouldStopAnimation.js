@@ -13,7 +13,7 @@ export default function shouldStopAnimation(
       continue;
     }
 
-    if (currentVelocity[key] !== 0) {
+    if (currentVelocity[key] !== 0) {// 速度不等于0
       return false;
     }
 
@@ -22,6 +22,9 @@ export default function shouldStopAnimation(
       : style[key].val;
     // stepper will have already taken care of rounding precision errors, so
     // won't have such thing as 0.9999 !=== 1
+    /*
+      stepper 会处理误差错误的，不会出现0.9999 !=== 1 这样情况
+    */
     if (currentStyle[key] !== styleValue) {
       return false;
     }
