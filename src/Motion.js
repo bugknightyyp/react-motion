@@ -65,7 +65,7 @@ const Motion = React.createClass({
       }
 
       const styleValue = destStyle[key];
-      if (typeof styleValue === 'number') {//只处理不进行动画的 number类型数据, 不处理进行动画的OpaqueConfig类型数据
+      if (typeof styleValue === 'number') {//只处理进行动画的 number类型数据, 不处理进行动画的OpaqueConfig类型数据
         if (!dirty) {
           dirty = true;
           currentStyle = {...currentStyle};// 对原来数据的复制，避免对this.state里对应的数据的改变
@@ -193,7 +193,7 @@ const Motion = React.createClass({
         lastIdealVelocity: newLastIdealVelocity,
       });
 
-      this.unreadPropStyle = null;
+      this.unreadPropStyle = null;//// 开始执行动画后，就清空unreadPropStyle
 
       this.startAnimationIfNecessary();
     });
